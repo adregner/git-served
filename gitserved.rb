@@ -16,7 +16,6 @@ get '/*' do
   while path.count > 0
     name = path.pop
     next if not name
-    puts "popped off #{name.inspect} with #{path.count} left"
     name = URI.decode_www_form_component(name) if name.include? '%'
 
     # step 1
@@ -60,12 +59,7 @@ get '/*' do
       break # let the handlers below handle showing what we got
     end
 
-    if item.nil?
-      break # something wasn't found...
-    elsif item.class == Array
-      break if item.count > 1
-      item = item.first
-    end
+    break if item.nil? # something wasn't found...
 
   end
 
@@ -74,6 +68,7 @@ get '/*' do
     mimetype = FileMagic.mime.buffer(raw.data)
     return [200, {"Content-type" => mimetype}, raw.data]
   else
+    # TODO detect when a 404 is warranted here
     base = request.env["PATH_INFO"].chomp('/')
     up = base.split('/')[0..-2].join('/')
     up = '/' if up == ''
