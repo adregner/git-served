@@ -13,8 +13,6 @@ get '/*' do
   repo = nil
   history_list = Dir["#{Config[:git_root]}/*"].map{|d| d.split('/')[-1] }
 
-  itters = 1
-
   while path.count > 0
     name = path.pop
     next if not name
@@ -69,13 +67,6 @@ get '/*' do
       item = item.first
     end
 
-    puts "got #{item.inspect} on itteration #{itters}"
-    itters += 1
-
-    if itters > 10
-      puts "OMG OOPS"
-      break
-    end
   end
 
   if item.class == Rugged::Blob
